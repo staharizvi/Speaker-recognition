@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speaker Recognition PoC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">Speaker Recognition System</h1>
+        
+        <!-- Recording Controls -->
+        <div class="bg-white rounded-lg shadow p-6 mb-8">
+            <div class="flex gap-4 mb-4">
+                <button id="startButton" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">
+                    Start Recording
+                </button>
+                <button id="stopButton" class="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600" disabled>
+                    Stop Recording
+                </button>
+            </div>
+            <div id="recordingStatus" class="text-gray-600">
+                Not recording
+            </div>
+        </div>
+
+        <!-- Transcript -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-semibold mb-4">Session Transcript</h2>
+            <div id="transcript" class="space-y-2">
+                <!-- Transcript entries will be added here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const recordingStatus = document.getElementById('recordingStatus');
+        const transcript = document.getElementById('transcript');
+
+        startButton.addEventListener('click', startRecording);
+        stopButton.addEventListener('click', stopRecording);
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                    processAudioChunk(event.data);
+                };
+
+                mediaRecorder.start(1000); // Capture in 1-second intervals
+                isRecording = true;
+                startButton.disabled = true;
+                stopButton.disabled = false;
+                recordingStatus.textContent = 'Recording in progress...';
+                recordingStatus.classList.add('text-green-600');
+
+                // Notify backend that recording has started
+                await fetch('/api/start-recording', { method: 'POST' });
+            } catch (error) {
+                console.error('Error starting recording:', error);
+                alert('Could not access microphone. Please ensure you have granted permission.');
+            }
+        }
+
+        async function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                startButton.disabled = false;
+                stopButton.disabled = true;
+                recordingStatus.textContent = 'Recording stopped';
+                recordingStatus.classList.remove('text-green-600');
+
+                // Notify backend that recording has stopped
+                await fetch('/api/stop-recording', { method: 'POST' });
+            }
+        }
+
+        async function processAudioChunk(audioChunk) {
+            const formData = new FormData();
+            formData.append('audio', new Blob([audioChunk], { type: 'audio/webm' }));
+
+            try {
+                const response = await fetch('/api/process-audio', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (data.status === 'success') {
+                    updateTranscript(data.transcript);
+                }
+            } catch (error) {
+                console.error('Error processing audio:', error);
+            }
+        }
+
+        function updateTranscript(transcriptData) {
+            transcript.innerHTML = transcriptData.map(entry => `
+                <div class="border-b border-gray-200 py-2">
+                    <span class="text-gray-500">${entry.timestamp}</span>
+                    <span class="font-semibold ml-2">${entry.speaker}:</span>
+                    <span class="ml-2">${entry.text}</span>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

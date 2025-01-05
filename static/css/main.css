@@ -1,0 +1,18 @@
+.recording-active {
+    background-color: #ff4444 !important;
+}
+
+.transcript-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.speaker-entry {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.timestamp {
+    color: #666;
+    font-size: 0.9em;
+}
