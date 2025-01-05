@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Recorder</title>
+    <!-- Correct path to CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    
+    <!-- Add Recorder.js CDN link -->
+    <script src="https://cdn.jsdelivr.net/npm/recorder-js@1.0.0"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Speech Recorder</h1>
+        
+        <div class="controls">
+            <button id="startRecord" class="btn">Start Recording</button>
+            <button id="stopRecord" class="btn" disabled>Stop Recording</button>
+        </div>
+
+        <div class="status">
+            <p id="recordingStatus">Not recording</p>
+            <canvas id="audioVisualizer" width="400" height="50"></canvas>
+        </div>
+
+        <div class="results">
+            <h2>Transcription Results</h2>
+            <div id="transcriptionResults"></div>
+        </div>
+    </div>
+
+    <!-- Correct path to JS file -->
+    <script src="{{ url_for('static', filename='js/recorder.js') }}"></script>
+</body>
+</html>

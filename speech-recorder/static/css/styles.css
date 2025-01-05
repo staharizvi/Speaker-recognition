@@ -1,0 +1,109 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+#startRecord {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#stopRecord {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.status {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#recordingStatus {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#audioVisualizer {
+    height: 50px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.results {
+    margin-top: 30px;
+}
+
+.results h2 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+#transcriptionResults {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+    min-height: 100px;
+}
+
+.transcription-entry {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: white;
+    border-left: 4px solid #4CAF50;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.transcription-entry .time {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.transcription-entry .speaker {
+    color: #4CAF50;
+    font-weight: bold;
+}
